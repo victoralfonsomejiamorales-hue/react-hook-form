@@ -3,6 +3,8 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import Input from "./Input";
 import { FormData, schema } from "../schemas/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Select from "./Select";
+import ErrorBanner from "./ErrorBanner";
 
 const Form = () => {
   const {
@@ -10,26 +12,42 @@ const Form = () => {
     handleSubmit,
     control,
     setError,
+    reset,
     formState: { errors, isSubmitting, isDirty, isValid },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
-    mode: "onChange",
+    mode: "onSubmit",
     defaultValues: {
       name: "",
       email: "",
       password: "",
       confirmPassword: "",
+      country: "",
     },
   });
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    console.log(data);
+    try {
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      console.log(data);
+      reset();
+    } catch (error) {
+      setError("root.serverError", {
+        message: "Error al crear la cuenta",
+      });
+    }
   };
 
   return (
-    <div className="p-4 border-2">
+    <div className="shadow-2xl p-6 border border-gray-200 sm:max-w-1/2 md:w-1/2 lg:w-1/4 mx-auto">
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+
+        {errors.root?.serverError && (
+          <ErrorBanner error={errors.root.serverError.message} />
+        )}
+
+
         <Input<FormData>
           label="Nombre"
           name="name"
@@ -60,6 +78,8 @@ const Form = () => {
           error={errors.confirmPassword?.message}
           type="password"
         />
+
+        <Select<FormData> control={control} name="country"/>
 
         <button
           type="submit"

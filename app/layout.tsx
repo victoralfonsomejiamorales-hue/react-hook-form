@@ -12,7 +12,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <main>{children}</main>
+        <main className="flex items-center mx-auto  h-dvh">
+          {children}
+        </main>
       </body>
     </html>
   );

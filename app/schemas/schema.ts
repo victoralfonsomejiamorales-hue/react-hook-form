@@ -14,6 +14,7 @@ export const schema = z
     confirmPassword: z
       .string()
       .min(6, "La confirmación de contraseña debe tener al menos 6 caracteres"),
+    country: z.string().min(1, "El país es requerido"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Las contraseñas no coinciden",
